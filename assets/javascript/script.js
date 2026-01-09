@@ -67,10 +67,18 @@ function buildAnnotations(gs) {
   var gridWidthInPx = gs.width * totalCellWidth;
   var gridHeightInPx = gs.height * totalCellHeight;
 
-  var svgWidth = gridWidthInPx + (adjustPadding * 2) + 200; // Extra space for labels
-  var svgHeight = gridHeightInPx + (adjustPadding * 2) + 200;
+  // SVG positioning and size - extend beyond grid for labels
+  var labelMargin = 150;
+  var svgLeft = -labelMargin;
+  var svgTop = -labelMargin;
+  var svgWidth = gridWidthInPx + (adjustPadding * 2) + (labelMargin * 2);
+  var svgHeight = gridHeightInPx + (adjustPadding * 2) + (labelMargin * 2);
 
-  var out = '<svg class="annotations-layer" style="position: absolute; top: 0; left: 0; width: ' + svgWidth + 'px; height: ' + svgHeight + 'px; pointer-events: none; z-index: 1000;">';
+  // Offset for coordinates within the SVG
+  var offsetX = labelMargin;
+  var offsetY = labelMargin;
+
+  var out = '<svg class="annotations-layer" style="position: absolute; top: ' + svgTop + 'px; left: ' + svgLeft + 'px; width: ' + svgWidth + 'px; height: ' + svgHeight + 'px; pointer-events: none; z-index: 1000; overflow: visible;">';
 
   gs.annotations.forEach(function(annotation) {
     // Validate coordinates
@@ -78,15 +86,20 @@ function buildAnnotations(gs) {
       return; // Skip invalid annotations
     }
 
-    // Calculate cell center position
-    var cellCenterX = adjustPadding + (annotation.x * totalCellWidth) + (totalCellWidth / 2);
-    var cellCenterY = adjustPadding + (annotation.y * totalCellHeight) + (totalCellHeight / 2);
+    // Calculate cell center position (relative to grid)
+    var cellCenterX = adjustPadding + (annotation.x * totalCellWidth) + (totalCellWidth / 2) + offsetX;
+    var cellCenterY = adjustPadding + (annotation.y * totalCellHeight) + (totalCellHeight / 2) + offsetY;
 
-    // Calculate distances to each margin
-    var distToLeft = cellCenterX;
-    var distToRight = gridWidthInPx + (adjustPadding * 2) - cellCenterX;
-    var distToTop = cellCenterY;
-    var distToBottom = gridHeightInPx + (adjustPadding * 2) - cellCenterY;
+    // Calculate distances to each margin (relative to grid edges)
+    var gridLeft = adjustPadding + offsetX;
+    var gridRight = gridLeft + gridWidthInPx;
+    var gridTop = adjustPadding + offsetY;
+    var gridBottom = gridTop + gridHeightInPx;
+
+    var distToLeft = cellCenterX - gridLeft;
+    var distToRight = gridRight - cellCenterX;
+    var distToTop = cellCenterY - gridTop;
+    var distToBottom = gridBottom - cellCenterY;
 
     var minDist = Math.min(distToLeft, distToRight, distToTop, distToBottom);
 
@@ -95,43 +108,43 @@ function buildAnnotations(gs) {
     // Determine which margin is closest
     if (minDist === distToLeft) {
       // Left margin
-      lineEndX = 5;
+      lineEndX = 10;
       lineEndY = cellCenterY;
-      textX = 5;
+      textX = 10;
       textY = cellCenterY;
       textAnchor = 'start';
       textBaseline = 'middle';
     } else if (minDist === distToRight) {
       // Right margin
-      lineEndX = gridWidthInPx + (adjustPadding * 2) + 5;
+      lineEndX = svgWidth - 10;
       lineEndY = cellCenterY;
-      textX = lineEndX + 5;
+      textX = svgWidth - 10;
       textY = cellCenterY;
-      textAnchor = 'start';
+      textAnchor = 'end';
       textBaseline = 'middle';
     } else if (minDist === distToTop) {
       // Top margin
       lineEndX = cellCenterX;
-      lineEndY = 5;
+      lineEndY = 10;
       textX = cellCenterX;
-      textY = 5;
+      textY = 15;
       textAnchor = 'middle';
       textBaseline = 'hanging';
     } else {
       // Bottom margin
       lineEndX = cellCenterX;
-      lineEndY = gridHeightInPx + (adjustPadding * 2) + 5;
+      lineEndY = svgHeight - 10;
       textX = cellCenterX;
-      textY = lineEndY + 5;
+      textY = svgHeight - 15;
       textAnchor = 'middle';
-      textBaseline = 'hanging';
+      textBaseline = 'auto';
     }
 
     // Draw line
-    out += '<line x1="' + cellCenterX + '" y1="' + cellCenterY + '" x2="' + lineEndX + '" y2="' + lineEndY + '" stroke="' + gs.borderColor + '" stroke-width="1" stroke-dasharray="3,3" />';
+    out += '<line x1="' + cellCenterX + '" y1="' + cellCenterY + '" x2="' + lineEndX + '" y2="' + lineEndY + '" stroke="' + gs.borderColor + '" stroke-width="1.5" stroke-dasharray="4,4" />';
 
     // Draw text
-    out += '<text x="' + textX + '" y="' + textY + '" font-family="monospace" font-size="12" fill="' + gs.borderColor + '" text-anchor="' + textAnchor + '" dominant-baseline="' + textBaseline + '">' + annotation.description + '</text>';
+    out += '<text x="' + textX + '" y="' + textY + '" font-family="monospace" font-size="11" fill="' + gs.borderColor + '" text-anchor="' + textAnchor + '" dominant-baseline="' + textBaseline + '" style="font-weight: 500;">' + annotation.description + '</text>';
   });
 
   out += '</svg>';
