@@ -83,6 +83,20 @@
   </tr>
 </table>
 
+<h3>Annotations</h3>
+<hr class="purple">
+<p>You can add annotations to specific cells using the following format:</p>
+<pre><code>x=COLNUM, y=ROWNUM, "Description"</code></pre>
+<p>Annotations will draw a dashed line from the specified cell to the nearest margin, where the description text will be displayed.</p>
+<ul>
+  <li><code>COLNUM</code>: Column number (0-indexed, starting from left)</li>
+  <li><code>ROWNUM</code>: Row number (0-indexed, starting from top)</li>
+  <li><code>Description</code>: Text label for the annotation (use quotes)</li>
+</ul>
+<p>You can add multiple annotations anywhere in your input. Example:</p>
+<pre><code>x=0, y=0, "Top Left"
+x=15, y=7, "Bottom Right"</code></pre>
+
 <h3>Default</h3>
 <hr class="blue">
 <pre id="default">

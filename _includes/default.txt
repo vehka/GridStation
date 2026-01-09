@@ -7,3 +7,6 @@ f e d c b a 9 8 7 6 5 4 3 2 1 0
 0 0 f 0 f f f 0 0 f f f f f 0 0
 0 0 f 0 0 0 f 0 0 0 0 0 0 f 0 0
 0 0 f f f f f 0 0 f f f f f 0 0
+x=0, y=1, "Gradient Start"
+x=15, y=2, "Gradient End"
+x=7, y=0, "Top Center"
