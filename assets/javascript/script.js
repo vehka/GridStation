@@ -105,11 +105,12 @@ function buildAnnotations(gs) {
 
     var lineEndX, lineEndY, textX, textY, textAnchor, textBaseline;
     var textOffset = 15; // Distance from grid edge to text
+    var lineInset = 10; // How far the line extends into the grid
 
     // Determine which margin is closest
     if (minDist === distToLeft) {
-      // Left margin - line goes to grid edge, text is just outside
-      lineEndX = gridLeft;
+      // Left margin - line extends past grid edge into margin
+      lineEndX = gridLeft - lineInset;
       lineEndY = cellCenterY;
       textX = gridLeft - textOffset;
       textY = cellCenterY;
@@ -117,7 +118,7 @@ function buildAnnotations(gs) {
       textBaseline = 'middle';
     } else if (minDist === distToRight) {
       // Right margin
-      lineEndX = gridRight;
+      lineEndX = gridRight + lineInset;
       lineEndY = cellCenterY;
       textX = gridRight + textOffset;
       textY = cellCenterY;
@@ -126,7 +127,7 @@ function buildAnnotations(gs) {
     } else if (minDist === distToTop) {
       // Top margin
       lineEndX = cellCenterX;
-      lineEndY = gridTop;
+      lineEndY = gridTop - lineInset;
       textX = cellCenterX;
       textY = gridTop - textOffset;
       textAnchor = 'middle';
@@ -134,7 +135,7 @@ function buildAnnotations(gs) {
     } else {
       // Bottom margin
       lineEndX = cellCenterX;
-      lineEndY = gridBottom;
+      lineEndY = gridBottom + lineInset;
       textX = cellCenterX;
       textY = gridBottom + textOffset;
       textAnchor = 'middle';
