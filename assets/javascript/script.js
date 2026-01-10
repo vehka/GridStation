@@ -68,7 +68,7 @@ function buildAnnotations(gs) {
   var gridHeightInPx = gs.height * totalCellHeight;
 
   // SVG positioning and size - extend beyond grid for labels
-  var labelMargin = 150;
+  var labelMargin = 80;
   var svgLeft = -labelMargin;
   var svgTop = -labelMargin;
   var svgWidth = gridWidthInPx + (adjustPadding * 2) + (labelMargin * 2);
@@ -104,47 +104,48 @@ function buildAnnotations(gs) {
     var minDist = Math.min(distToLeft, distToRight, distToTop, distToBottom);
 
     var lineEndX, lineEndY, textX, textY, textAnchor, textBaseline;
+    var textOffset = 15; // Distance from grid edge to text
 
     // Determine which margin is closest
     if (minDist === distToLeft) {
-      // Left margin
-      lineEndX = 10;
+      // Left margin - line goes to grid edge, text is just outside
+      lineEndX = gridLeft;
       lineEndY = cellCenterY;
-      textX = 10;
+      textX = gridLeft - textOffset;
       textY = cellCenterY;
-      textAnchor = 'start';
+      textAnchor = 'end';
       textBaseline = 'middle';
     } else if (minDist === distToRight) {
       // Right margin
-      lineEndX = svgWidth - 10;
+      lineEndX = gridRight;
       lineEndY = cellCenterY;
-      textX = svgWidth - 10;
+      textX = gridRight + textOffset;
       textY = cellCenterY;
-      textAnchor = 'end';
+      textAnchor = 'start';
       textBaseline = 'middle';
     } else if (minDist === distToTop) {
       // Top margin
       lineEndX = cellCenterX;
-      lineEndY = 10;
+      lineEndY = gridTop;
       textX = cellCenterX;
-      textY = 15;
+      textY = gridTop - textOffset;
       textAnchor = 'middle';
-      textBaseline = 'hanging';
+      textBaseline = 'auto';
     } else {
       // Bottom margin
       lineEndX = cellCenterX;
-      lineEndY = svgHeight - 10;
+      lineEndY = gridBottom;
       textX = cellCenterX;
-      textY = svgHeight - 15;
+      textY = gridBottom + textOffset;
       textAnchor = 'middle';
-      textBaseline = 'auto';
+      textBaseline = 'hanging';
     }
 
     // Draw line
     out += '<line x1="' + cellCenterX + '" y1="' + cellCenterY + '" x2="' + lineEndX + '" y2="' + lineEndY + '" stroke="' + gs.borderColor + '" stroke-width="1.5" stroke-dasharray="4,4" />';
 
-    // Draw text
-    out += '<text x="' + textX + '" y="' + textY + '" font-family="monospace" font-size="11" fill="' + gs.borderColor + '" text-anchor="' + textAnchor + '" dominant-baseline="' + textBaseline + '" style="font-weight: 500;">' + annotation.description + '</text>';
+    // Draw text with background for better readability
+    out += '<text x="' + textX + '" y="' + textY + '" font-family="monospace" font-size="11" fill="' + gs.borderColor + '" text-anchor="' + textAnchor + '" dominant-baseline="' + textBaseline + '" style="font-weight: 600;">' + annotation.description + '</text>';
   });
 
   out += '</svg>';
