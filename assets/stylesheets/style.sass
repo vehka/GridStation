@@ -40,15 +40,25 @@ hr.purple
   box-sizing: content-box
 
 .gs-output
+  overflow: visible
+
+  .gs-row
+    overflow: visible
+
   #grid,
   #cells-foreground
     border-style: solid
     border-radius: 8px
     background: #000000
-  
+
+  #grid
+    position: relative
+    z-index: 1
+
   #cells-foreground
     position: absolute
     background: none
+    z-index: 2
     .val-0
       opacity: 0
     .val-1
@@ -99,6 +109,7 @@ hr.purple
 
   .wrap
     position: relative
+    overflow: visible
 
   .crosshair
     width: 20px

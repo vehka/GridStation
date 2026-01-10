@@ -78,7 +78,7 @@ function buildAnnotations(gs) {
   var offsetX = labelMargin;
   var offsetY = labelMargin;
 
-  var out = '<svg class="annotations-layer" style="position: absolute; top: ' + svgTop + 'px; left: ' + svgLeft + 'px; width: ' + svgWidth + 'px; height: ' + svgHeight + 'px; pointer-events: none; z-index: 1000; overflow: visible;">';
+  var out = '<svg class="annotations-layer" style="position: absolute; top: ' + svgTop + 'px; left: ' + svgLeft + 'px; width: ' + svgWidth + 'px; height: ' + svgHeight + 'px; pointer-events: none; z-index: 10; overflow: visible;">';
 
   gs.annotations.forEach(function(annotation) {
     // Validate coordinates
@@ -185,7 +185,8 @@ function getInput() {
   gs.gridBorder = Number(gsInput[9])
   gs.cellBorder = Number(gsInput[10])
   gsInput.splice(0,11)
-  gs.cells = gsInput
+  // Filter out empty strings that may result from annotation removal
+  gs.cells = gsInput.filter(function(val) { return val !== ''; })
   return gs
 }
 
